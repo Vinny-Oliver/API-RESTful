@@ -1,0 +1,45 @@
+CRIAÇÃO DE API
+dotnet new webapi
+
+EXECUÇÃO DA API
+dotnet watch run
+
+Controller
+É uma classe que agrupa requisições HTTP e DISPONIBILIZA OS ENDPOINTS
+Exemplo classe WatherForeCastController = Tudo que for relacionado a previsão do tempo
+Será agrupado nesta controller
+
+Instalando uma ferramenta do Entity Framework EF
+Nível de máquina e não de projeto
+dotnet tool install --global dotnet-ef
+
+Instalando o Pacote Entity Framework - Instalado no projeto
+Criou um EF deverá instalar sempre ele
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+Todo pacote deverá ser instalado em cada novo projeto
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+
+Criar uma pasta Entities para indicar que tudo que estiver dentro se refere a uma tabela de banco de dados;
+
+Contexto é uma classe que centraliza todas as informações em um determinado banco de dados
+
+// Está dentro de um Dbset pois está sendo representado por uma classe em um nosso  programa e também será representado por uma tabela no nosso banco de dados
+
+Conextão ao banco de dados appsettings.Development.json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "ConexaoPadrao": "Server=localhost\\sqlexpress; Initial Catalog=Agenda; Integrated Security=True"
+  }
+}
+
+
+
+ 
+
