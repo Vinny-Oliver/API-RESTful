@@ -1,23 +1,26 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using MODULOAPI.Context;
+using TrilhaApiDesafio.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Adicionar serviços ao contêiner
-
-// Estamos falando para adicionar um db context da Agenda Context e passando algumas opções. Falamos assim: Agenda Context use UseSqlServer
-// Builder.Configuration estou pegando a configuração do appsettings e o GetConnectionString ele pega alguma chave da ConnectionString e o nome da minha conexão chamada ConexaoPadrao
-// Indo em appsetting veremos que está acessando a chave ConnectionStrings e dentro da chave acessando o valor ConexaoPadrao
-builder.Services.AddDbContext<AgendaContext>(options =>
+// Configuração da conexão com o banco de dados
+builder.Services.AddDbContext<OrganizadorContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoPadrao")));
 
-builder.Services.AddControllers();
+// Configuração do CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -44,6 +47,9 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = "swagger"; // Acesso em /swagger
     });
 }
+
+// Usar CORS antes de qualquer outro middleware
+app.UseCors("AllowAllOrigins");
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

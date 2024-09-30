@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vinic\\Desktop\\DIO\\API\\MODULOAPI\\MODULOAPI.csproj": {}
+    "C:\\Users\\vinic\\Desktop\\DIO\\API\\ASP.NET Core MVC\\TrilhaApiDesafio\\MODULOAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vinic\\Desktop\\DIO\\API\\MODULOAPI\\MODULOAPI.csproj": {
+    "C:\\Users\\vinic\\Desktop\\DIO\\API\\ASP.NET Core MVC\\TrilhaApiDesafio\\MODULOAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vinic\\Desktop\\DIO\\API\\MODULOAPI\\MODULOAPI.csproj",
+        "projectUniqueName": "C:\\Users\\vinic\\Desktop\\DIO\\API\\ASP.NET Core MVC\\TrilhaApiDesafio\\MODULOAPI.csproj",
         "projectName": "MODULOAPI",
-        "projectPath": "C:\\Users\\vinic\\Desktop\\DIO\\API\\MODULOAPI\\MODULOAPI.csproj",
+        "projectPath": "C:\\Users\\vinic\\Desktop\\DIO\\API\\ASP.NET Core MVC\\TrilhaApiDesafio\\MODULOAPI.csproj",
         "packagesPath": "C:\\Users\\vinic\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vinic\\Desktop\\DIO\\API\\MODULOAPI\\obj\\",
+        "outputPath": "C:\\Users\\vinic\\Desktop\\DIO\\API\\ASP.NET Core MVC\\TrilhaApiDesafio\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\vinic\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -46,10 +46,6 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Microsoft.AspNetCore.Mvc": {
-              "target": "Package",
-              "version": "[2.2.0, )"
-            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.8, )"

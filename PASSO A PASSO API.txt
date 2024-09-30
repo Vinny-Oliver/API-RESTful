@@ -1,32 +1,99 @@
 CRIAÇÃO DE API
+
+Crie uma pasta e selecione. No terminal digite o código abaixo. Será criado automaticamente a pasta Controllers. Será criado automaticamente um pequeno exemplo no program de previsão do tempo.
+Dentro da pasta controllers pode ser criada outras classes
 dotnet new webapi
 
 EXECUÇÃO DA API
 dotnet watch run
 
-Controller
-É uma classe que agrupa requisições HTTP e DISPONIBILIZA OS ENDPOINTS
-Exemplo classe WatherForeCastController = Tudo que for relacionado a previsão do tempo
-Será agrupado nesta controller
+__________________________________________________________________________________________________________________________________________________________________________________
 
-Instalando uma ferramenta do Entity Framework EF
+Instalação da ferramenta e dos pacotes:
+
+Instalando uma ferramenta do Entity Framework EF Apenas uma vez
 Nível de máquina e não de projeto
 dotnet tool install --global dotnet-ef
 
-Instalando o Pacote Entity Framework - Instalado no projeto
+Instalando o Pacote Entity Framework - Instalando em todo novo projeto
 Criou um EF deverá instalar sempre ele
 dotnet add package Microsoft.EntityFrameworkCore.Design
 
-Todo pacote deverá ser instalado em cada novo projeto
+Todo pacote deverá ser instalado em cada novo projeto. Esse pacote é para vincular com o Gerenciados de banco de dados 
 dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 
-Criar uma pasta Entities para indicar que tudo que estiver dentro se refere a uma tabela de banco de dados;
+Obs.: Para verificar se foi tudo instalado ir em ModuloAPIcsproj
 
-Contexto é uma classe que centraliza todas as informações em um determinado banco de dados
+______________________________________________________________________________________________________________________________________________________________________________________
 
-// Está dentro de um Dbset pois está sendo representado por uma classe em um nosso  programa e também será representado por uma tabela no nosso banco de dados
+Criando a classe Models / Entities
+Crie uma pasta Models e duas classes EnumStatusTarefa e Tarefa:
+Exemplo:
 
-Conextão ao banco de dados appsettings.Development.json
+namespace TrilhaApiDesafio.Models
+{
+    public enum EnumStatusTarefa
+    {
+        Pendente,
+        Finalizado
+    }
+}
+
+-------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace TrilhaApiDesafio.Models
+{
+    public class Tarefa
+    {
+        public int Id { get; set; }
+        public string Titulo { get; set; }
+        public string Descricao { get; set; }
+        public DateTime Data { get; set; }
+        public EnumStatusTarefa Status { get; set; }
+    }
+}
+
+
+
+________________________________________________________________________________________________________________________________________________________________________________________
+
+Criando a pasta Context e a classe OrganizadorContext
+
+using Microsoft.EntityFrameworkCore;
+using MODULOAPI.Entities;
+
+// Contexto é uma classe que centraliza todas as informações em um determinado banco de dados
+
+using Microsoft.EntityFrameworkCore;
+using TrilhaApiDesafio.Models;
+
+namespace TrilhaApiDesafio.Context
+{
+    public class OrganizadorContext : DbContext
+    {
+        public OrganizadorContext(DbContextOptions<OrganizadorContext> options) : base(options)
+        {
+            
+        }
+
+        public DbSet<Tarefa> Tarefas { get; set; }
+    }
+}
+
+_____________________________________________________________________________________________________________________________________________________________________________________________
+
+
+Configurando a conexão
+
+Obs.: appsettings.Development.json é para desenvolvimento de testes e o appsettings.json é para desenvolvimento de produção real, ou seja, quando for lançado.
+
+Conexão ao banco de dados SqlServer em appsettings.Development.json
+
 {
   "Logging": {
     "LogLevel": {
@@ -35,9 +102,181 @@ Conextão ao banco de dados appsettings.Development.json
     }
   },
   "ConnectionStrings": {
-    "ConexaoPadrao": "Server=localhost\\sqlexpress; Initial Catalog=Agenda; Integrated Security=True"
+    "ConexaoPadrao": "Server=localhost\\sqlexpress; Initial Catalog=Tarefa; Integrated Security=True; TrustServerCertificate=True"
   }
 }
+
+
+Vá em program e faça os imports:
+
+
+
+using TrilhaApiDesafio.Context;
+using Microsoft.EntityFrameworkCore;
+
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<OrganizadorContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoPadrao")));
+
+builder.Services.AddControllers();
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+// Configurar o pipeline de solicitações HTTP
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+
+    // Configure o Swagger UI para estar disponível em duas rotas
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ModuloAPI v1");
+        c.RoutePrefix = string.Empty; // Acesso na raiz
+    });
+
+    // Adicionar uma segunda instância do Swagger UI em outra rota
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ModuloAPI v1");
+        c.RoutePrefix = "swagger"; // Acesso em /swagger
+    });
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+
+app.MapControllers(); // Mapeia os controladores
+
+app.Run();
+
+
+
+___________________________________________________________________________________________________________________________________________________________________________________________________
+
+Migrations é o mapeamento que faz das nossas classes para poder transformar em tabelas
+Primeiramente verificar se o Banco de dados está conectado em SqlConfiguration e verificar se o SQL Server (SQLEXPRESS) se está rodando. Depois ir no programa do SqlServer e se conecte
+
+Ir no terminar e digitar:
+dotnet ef migrations add CriacaoTabelaContato
+dotnet ef migrations add CriacaoTabelaTarefas
+
+Para aplicar a Migration no Banco de Dados Ir no terminal e digitar:
+dotnet ef database update
+
+______________________________________________________________________________________________________________________________________________________________________________________________________
+
+Criando Controller chamado ContatoController e seus Endpoints
+
+using Microsoft.AspNetCore.Mvc;
+using MODULOAPI.Context;
+using MODULOAPI.Entities;
+
+namespace MODULOAPI.Controllers
+{
+    
+    [ApiController] 
+    [Route("[controller]")] 
+    public class ContatoController : ControllerBase 
+    {
+        
+        private readonly AgendaContext _context;
+
+        public  ContatoController(AgendaContext context) // No contrutor vamos receber o AgendaContext chamando-a de context
+        {
+            _context = context;
+        }
+
+
+//__________________________________________________________________________________________________________________________________________________________________________________
+                                                                        // CRUD
+    
+
+        // Criando Endpoint com o Objetivo de implementar um CRUD na tabela de contato
+
+        // Método Insert
+        [HttpPost] 
+        public IActionResult Create(Contato contato) 
+        {
+            _context.Add(contato);
+            _context.SaveChanges(); // Atualiza o banco de dados
+            return CreatedAtAction(nameof(ObterPorId), new { id = contato.Id }, contato);
+        }
+
+        // Criando + um método Get (busca) SELECT por ID
+        [HttpGet("id")] // Vai passar o id para ObterPorId
+        public IActionResult ObterPorId(int id) // Vai receber
+        {
+            var contato = _context.Contatos.Find(id); 
+
+            // Validação para um id inválido
+            if (contato == null)
+            return NotFound(); 
+
+            return Ok(contato); 
+        }
+
+        // Método de busca por nome
+        [HttpGet("ObterPorNome")]
+        public IActionResult ObterPorNome(string nome)
+        {
+            var contatos = _context.Contatos.Where(x => x.Nome.Contains(nome));
+            return Ok(contatos);
+        }
+
+        // Criando + um endpoint para atualizar o contato
+        [HttpPut("{id}")]
+        public IActionResult Atualizar(int id, Contato contato) // Método atualizar vai receber um id que deseja atualizar e que também vai receber o Json de contato com as informações
+        {
+            var contatoBanco = _context.Contatos.Find(id);
+
+            if (contatoBanco == null) // Se o contato for nulo;
+                return NotFound(); // Retorna NotFound
+
+            // Se o contato não for nulo faça
+            contatoBanco.Nome = contato.Nome; 
+            contatoBanco.Telefone = contato.Telefone; // ''     ''      ''      ''              ''      ''
+            contatoBanco.Ativo = contato.Ativo; // ''     ''      ''      ''              ''      ''
+
+            _context.Contatos.Update(contatoBanco); 
+            _context.SaveChanges(); 
+
+            return Ok(contatoBanco); 
+
+        }
+
+        // Criando endpoint Deleter
+        [HttpDelete("{id}")]
+        public IActionResult Deleter(int id)
+        {
+            var contatoBanco = _context.Contatos.Find(id);
+
+            if (contatoBanco == null)
+                return NotFound();
+
+                _context.Contatos.Remove(contatoBanco);
+                _context.SaveChanges();
+
+                return NoContent();
+        }                                                               
+    }
+}
+
+                                                                            // CRUD
+//__________________________________________________________________________________________________________________________________________________________________________________
+
+// Feito isso dotnet watch run
+
+
+
+
+
+
 
 
 
