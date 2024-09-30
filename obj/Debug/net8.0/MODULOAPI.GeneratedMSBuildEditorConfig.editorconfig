@@ -9,11 +9,19 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = MODULOAPI
 build_property.RootNamespace = MODULOAPI
+<<<<<<< HEAD
 build_property.ProjectDir = C:\Users\vinic\Desktop\DIO\API\ASP.NET Core MVC\TrilhaApiDesafio\
+=======
+build_property.ProjectDir = /workspaces/API/
+>>>>>>> 3ce347ccb459535ad43fe4900cc8e7d6676f1e68
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+<<<<<<< HEAD
 build_property.MSBuildProjectDirectory = C:\Users\vinic\Desktop\DIO\API\ASP.NET Core MVC\TrilhaApiDesafio
+=======
+build_property.MSBuildProjectDirectory = /workspaces/API
+>>>>>>> 3ce347ccb459535ad43fe4900cc8e7d6676f1e68
 build_property._RazorSourceGeneratorDebug = 
